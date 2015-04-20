@@ -1,11 +1,18 @@
 package uptodate.java;
 
+import cpw.mods.fml.common.LoadController;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.LoaderState;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.init.Blocks;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.ChunkDataEvent;
 import uptodate.java.api.IUpdateable;
+import uptodate.java.util.ReflectionUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,15 +29,22 @@ public class UpToDate implements IUpdateable
 	public ArrayList<IUpdateable> severe = new ArrayList<IUpdateable>();
 	public ArrayList<IUpdateable> critical = new ArrayList<IUpdateable>();
 
-	public void pre(FMLPreInitializationEvent event) {
-		
-	}
-
 	@EventHandler
     public void init(FMLInitializationEvent event)
     {
-		// some example code
-        System.out.println("DIRT BLOCK >> "+Blocks.dirt.getUnlocalizedName());
+		Object objMods = ReflectionUtil.getFieldValFromObj(Loader.instance(), "mods");
+		Object objController = ReflectionUtil.getFieldValFromObj(Loader.instance(), "modController");
+
+		if (objController instanceof LoadController && objMods instanceof List) {
+			List mods = (List) objMods;
+			LoadController controller = (LoadController) objController;
+
+			for (Object mod : mods) {
+				if (mod instanceof ModContainer && controller.getModState((ModContainer) mod) != LoaderState.ModState.DISABLED) {
+					handleMod((ModContainer) mod);
+				}
+			}
+		}
     }
 
 	@Override
@@ -44,5 +58,9 @@ public class UpToDate implements IUpdateable
 		result.put("technical", String.valueOf(SIMPLE_VERSION));
 		result.put("display", VERSION);
 		return result;
+	}
+
+	public void handleMod(ModContainer mod) {
+		
 	}
 }
