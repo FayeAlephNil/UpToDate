@@ -24,6 +24,9 @@
 # Gradle:
 # .idea/gradle.xml
 # .idea/libraries
+gradle
+gradlew
+gradlew.bat
 
 # Mongo Explorer plugin:
 # .idea/mongoSettings.xml
@@ -110,7 +113,7 @@ nb-configuration.xml
 *.war
 *.ear
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# virtual machine crash logs, see http://www.main.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 
@@ -182,3 +185,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+### Minecraft ###
+eclipse
