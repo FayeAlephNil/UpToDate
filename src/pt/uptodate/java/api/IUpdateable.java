@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 public interface IUpdateable {
 
+	public String getName();
+
 	// Has to be valid YAML or JSON
 	public String getRemote();
 

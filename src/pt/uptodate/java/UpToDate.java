@@ -21,6 +21,7 @@ import java.util.Map;
 public class UpToDate implements IUpdateable
 {
     public static final String MODID = "uptodate";
+	public static final String MODNAME = "UpToDate";
     public static final String VERSION = "1.0";
 	public static final int SIMPLE_VERSION = 1;
 
@@ -46,6 +47,11 @@ public class UpToDate implements IUpdateable
 			}
 		}
     }
+
+	@Override
+	public String getName() {
+		return "UpToDate";
+	}
 
 	@Override
 	public String getRemote() {
