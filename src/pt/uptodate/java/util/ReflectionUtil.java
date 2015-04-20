@@ -1,4 +1,4 @@
-package uptodate.java.util;
+package pt.uptodate.java.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

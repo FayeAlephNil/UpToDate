@@ -18,8 +18,8 @@ buildscript {
 apply plugin: 'forge'
 
 version = "1.0"
-group= "com.yourname.modid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "modid"
+group= "pt.uptodate" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "uptodate"
 
 minecraft {
     version = "1.7.10-10.13.3.1387-1.7.10"
@@ -40,6 +40,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+	compile "org.yaml:snakeyaml:1.15"
 }
 
 processResources
