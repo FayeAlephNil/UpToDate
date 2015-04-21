@@ -18,6 +18,7 @@ import pt.uptodate.util.Logger;
 import pt.uptodate.util.ReflectionUtil;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -48,7 +49,6 @@ public class UpToDate implements IUpdateable
 				for (Object mod : mods) {
 					if (mod instanceof ModContainer && ((ModContainer) mod).getMod() instanceof IUpdateable) {
 						IUpdateable modObj = (IUpdateable) ((ModContainer) mod).getMod();
-						Logger.info("Checking if " + modObj.getName() + " is out of date");
 						FetchedUpdateable toBe = new FetchedUpdateable(modObj);
 						if (toBe.diff > 0) {
 							updates.add(toBe);
@@ -56,8 +56,10 @@ public class UpToDate implements IUpdateable
 					}
 				}
 			}
-
-			Logger.info("The following mods are out of date: " + StringUtils.join(updates, ','));
+			ArrayList<String> updateNames = new ArrayList<String>();
+			for (FetchedUpdateable fetched : updates)
+				updateNames.add(fetched.mod.getName());
+			Logger.info("The following mods are out of date: " + StringUtils.join(updateNames, ", "));
 		}
 	}
 
