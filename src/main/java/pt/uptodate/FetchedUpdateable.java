@@ -23,6 +23,8 @@ public class FetchedUpdateable {
 	public IUpdateable mod;
 
 	public FetchedUpdateable(IUpdateable mod) {
+		this.mod = mod;
+
 		Yaml yaml = new Yaml();
 		Map<String, Object> load = (Map<String, Object>) yaml.load(mod.getRemote());
 
