@@ -1,8 +1,8 @@
-package main.uptodate.java;
+package pt.uptodate;
 
 import org.yaml.snakeyaml.Yaml;
-import api.java.IUpdateable;
-import main.uptodate.java.util.Logger;
+import pt.api.IUpdateable;
+import pt.uptodate.util.Logger;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package api.java;
+package pt.api;
 
 import java.util.HashMap;
 

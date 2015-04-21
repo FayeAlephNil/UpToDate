@@ -1,4 +1,4 @@
-package main.uptodate.java;
+package pt.uptodate;
 
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.Loader;
@@ -8,9 +8,10 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import api.java.IUpdateable;
-import main.uptodate.java.util.Logger;
-import main.uptodate.java.util.ReflectionUtil;
+
+import pt.api.IUpdateable;
+import pt.uptodate.util.Logger;
+import pt.uptodate.util.ReflectionUtil;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
