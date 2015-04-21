@@ -74,7 +74,7 @@ public class UpToDate implements IUpdateable
 		try {
 			ContentsService service = new ContentsService();
 			Repository repo = (new RepositoryService()).getRepository("PhoenixTeamMC", "UpToDate");
-			List codedContents = service.getContents(repo, "version.yaml");
+			List codedContents = service.getContents(repo, "version.json");
 			RepositoryContents contents = (RepositoryContents) codedContents.get(0);
 			byte[] decoded = Base64.decodeBase64(contents.getContent());
 			result = new String(decoded);
