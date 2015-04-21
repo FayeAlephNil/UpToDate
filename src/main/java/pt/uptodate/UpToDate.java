@@ -9,6 +9,9 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import org.eclipse.egit.github.core.IRepositoryIdProvider;
+import org.eclipse.egit.github.core.RepositoryContents;
+import org.eclipse.egit.github.core.service.ContentsService;
 import pt.api.IUpdateable;
 import pt.uptodate.util.Logger;
 import pt.uptodate.util.ReflectionUtil;
@@ -65,12 +68,14 @@ public class UpToDate implements IUpdateable
 
 	@Override
 	public String getRemote() {
+		ContentsService service = new ContentsService();
 		try {
-			URL updateUrl = new URL("http://raw.githubusercontent.com/PhoenixTeamMC/UpToDate/master/version/version.yaml");
-			InputStreamReader r = new InputStreamReader(updateUrl.openStream());
-			return IOUtils.toString(r);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			return StringUtils.join(service.getContents(new IRepositoryIdProvider() {
+				@Override
+				public String generateId() {
+					return "repos/PhoenixTeamMC/UpToDate";
+				}
+			}), "/version.yaml") ;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
