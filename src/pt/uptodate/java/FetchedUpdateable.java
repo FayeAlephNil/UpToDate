@@ -2,6 +2,7 @@ package pt.uptodate.java;
 
 import org.yaml.snakeyaml.Yaml;
 import pt.uptodate.java.api.IUpdateable;
+import pt.uptodate.java.util.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class FetchedUpdateable {
 	public FetchedUpdateable(IUpdateable mod) {
 		Yaml yaml = new Yaml();
 		Map<String, Object> load = (Map<String, Object>) yaml.load(mod.getRemote());
+		Logger.info(load.toString());
 
 		auto = (Boolean) load.get("auto");
 		severity = (Integer) load.get("severity");

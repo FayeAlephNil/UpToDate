@@ -7,6 +7,7 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.IOUtils;
@@ -35,7 +36,7 @@ public class UpToDate implements IUpdateable
 	public ArrayList<FetchedUpdateable> updates = new ArrayList<FetchedUpdateable>();
 
 	@EventHandler
-	public void post(FMLPostInitializationEvent event) {
+	public void complete(FMLLoadCompleteEvent event) {
 		if (netIsAvailable()) {
 			Object objMods = ReflectionUtil.getFieldValFromObj(Loader.instance(), "mods");
 			Object objController = ReflectionUtil.getFieldValFromObj(Loader.instance(), "modController");
@@ -59,6 +60,10 @@ public class UpToDate implements IUpdateable
 			FetchedUpdateable toBe = new FetchedUpdateable(this);
 			if (toBe.diff > 0) {
 				updates.add(toBe);
+			}
+
+			if (!updates.contains(toBe)) {
+				Logger.info("UpToDate is up to date!");
 			}
 
 			Logger.info("The following mods are out of date: " + StringUtils.join(updates, ','));
