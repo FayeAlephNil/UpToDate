@@ -23,7 +23,7 @@ public class FetchedUpdateable {
 
 	public FetchedUpdateable(IUpdateable mod) {
 		Yaml yaml = new Yaml();
-		Map load = (Map) yaml.load(mod.getRemote());
+		Map<String, Object> load = (Map<String, Object>) yaml.load(mod.getRemote());
 
 		auto = (Boolean) load.get("auto");
 		severity = (Integer) load.get("severity");

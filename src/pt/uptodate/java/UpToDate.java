@@ -7,6 +7,7 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Mod(modid = UpToDate.MOD_ID, version = UpToDate.VERSION)
+@Mod(modid = UpToDate.MOD_ID, version = UpToDate.VERSION, name = UpToDate.MOD_NAME)
 public class UpToDate implements IUpdateable
 {
     public static final String MOD_ID = "uptodate";
@@ -34,8 +35,7 @@ public class UpToDate implements IUpdateable
 	public ArrayList<FetchedUpdateable> updates = new ArrayList<FetchedUpdateable>();
 
 	@EventHandler
-    public void init(FMLInitializationEvent event)
-    {
+	public void post(FMLPostInitializationEvent event) {
 		if (netIsAvailable()) {
 			Object objMods = ReflectionUtil.getFieldValFromObj(Loader.instance(), "mods");
 			Object objController = ReflectionUtil.getFieldValFromObj(Loader.instance(), "modController");
@@ -43,9 +43,9 @@ public class UpToDate implements IUpdateable
 			if (objController instanceof LoadController && objMods instanceof List) {
 				List mods = (List) objMods;
 				LoadController controller = (LoadController) objController;
-
+				Logger.info("Got mods list");
 				for (Object mod : mods) {
-					if (mod instanceof IUpdateable && controller.getModState((ModContainer) mod) != LoaderState.ModState.DISABLED) {
+					if (mod instanceof IUpdateable) {
 						Logger.info("Checking if " + ((IUpdateable) mod).getName() + " is out of date");
 						FetchedUpdateable toBe = new FetchedUpdateable((IUpdateable) mod);
 						if (toBe.diff > 0) {
@@ -54,6 +54,13 @@ public class UpToDate implements IUpdateable
 					}
 				}
 			}
+
+			Logger.info("Checking if " + this.getName() + " is out of date");
+			FetchedUpdateable toBe = new FetchedUpdateable(this);
+			if (toBe.diff > 0) {
+				updates.add(toBe);
+			}
+
 			Logger.info("The following mods are out of date: " + StringUtils.join(updates, ','));
 		}
 	}
