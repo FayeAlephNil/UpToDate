@@ -6,18 +6,18 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 
-import org.eclipse.egit.github.core.IRepositoryIdProvider;
+import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.service.ContentsService;
+import org.eclipse.egit.github.core.service.RepositoryService;
 import pt.api.IUpdateable;
 import pt.uptodate.util.Logger;
 import pt.uptodate.util.ReflectionUtil;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -68,18 +68,18 @@ public class UpToDate implements IUpdateable
 
 	@Override
 	public String getRemote() {
-		ContentsService service = new ContentsService();
+		String result = null;
 		try {
-			return StringUtils.join(service.getContents(new IRepositoryIdProvider() {
-				@Override
-				public String generateId() {
-					return "repos/PhoenixTeamMC/UpToDate";
-				}
-			}), "/version.yaml") ;
+			ContentsService service = new ContentsService();
+			Repository repo = (new RepositoryService()).getRepository("PhoenixTeamMC", "UpToDate");
+			List codedContents = service.getContents(repo, "version.yaml");
+			RepositoryContents contents = (RepositoryContents) codedContents.get(0);
+			byte[] decoded = Base64.decodeBase64(contents.getContent());
+			result = new String(decoded);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return result;
 	}
 
 	@Override
