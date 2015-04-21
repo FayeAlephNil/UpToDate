@@ -7,21 +7,27 @@ import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import org.yaml.snakeyaml.Yaml;
+import net.minecraft.client.Minecraft;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import pt.uptodate.java.api.IUpdateable;
+import pt.uptodate.java.util.Logger;
 import pt.uptodate.java.util.ReflectionUtil;
 
-import java.lang.reflect.Array;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-@Mod(modid = UpToDate.MODID, version = UpToDate.VERSION)
+@Mod(modid = UpToDate.MOD_ID, version = UpToDate.VERSION)
 public class UpToDate implements IUpdateable
 {
-    public static final String MODID = "uptodate";
-	public static final String MODNAME = "UpToDate";
+    public static final String MOD_ID = "uptodate";
+	public static final String MOD_NAME = "UpToDate";
     public static final String VERSION = "1.0";
 	public static final int SIMPLE_VERSION = 1;
 
@@ -30,31 +36,44 @@ public class UpToDate implements IUpdateable
 	@EventHandler
     public void init(FMLInitializationEvent event)
     {
-		Object objMods = ReflectionUtil.getFieldValFromObj(Loader.instance(), "mods");
-		Object objController = ReflectionUtil.getFieldValFromObj(Loader.instance(), "modController");
+		if (netIsAvailable()) {
+			Object objMods = ReflectionUtil.getFieldValFromObj(Loader.instance(), "mods");
+			Object objController = ReflectionUtil.getFieldValFromObj(Loader.instance(), "modController");
 
-		if (objController instanceof LoadController && objMods instanceof List) {
-			List mods = (List) objMods;
-			LoadController controller = (LoadController) objController;
+			if (objController instanceof LoadController && objMods instanceof List) {
+				List mods = (List) objMods;
+				LoadController controller = (LoadController) objController;
 
-			for (Object mod : mods) {
-				if (mod instanceof IUpdateable && controller.getModState((ModContainer) mod) != LoaderState.ModState.DISABLED) {
-					FetchedUpdateable toBe = new FetchedUpdateable((IUpdateable) mod);
-					if (toBe.diff > 0) {
-						updates.add(toBe);
+				for (Object mod : mods) {
+					if (mod instanceof IUpdateable && controller.getModState((ModContainer) mod) != LoaderState.ModState.DISABLED) {
+						Logger.info("Checking if " + ((IUpdateable) mod).getName() + " is out of date");
+						FetchedUpdateable toBe = new FetchedUpdateable((IUpdateable) mod);
+						if (toBe.diff > 0) {
+							updates.add(toBe);
+						}
 					}
 				}
 			}
+			Logger.info("The following mods are out of date: " + StringUtils.join(updates, ','));
 		}
-    }
+	}
 
 	@Override
 	public String getName() {
-		return "UpToDate";
+		return MOD_NAME;
 	}
 
 	@Override
 	public String getRemote() {
+		try {
+			URL updateUrl = new URL("http://raw.githubusercontent.com/PhoenixTeamMC/UpToDate/master/version/version.yaml");
+			InputStreamReader r = new InputStreamReader(updateUrl.openStream());
+			return IOUtils.toString(r);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -64,5 +83,18 @@ public class UpToDate implements IUpdateable
 		result.put("technical", String.valueOf(SIMPLE_VERSION));
 		result.put("display", VERSION);
 		return result;
+	}
+
+	private static boolean netIsAvailable() {
+		try {
+			final URL url = new URL("http://www.google.com");
+			final URLConnection conn = url.openConnection();
+			conn.connect();
+			return true;
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			return false;
+		}
 	}
 }
