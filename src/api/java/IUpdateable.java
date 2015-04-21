@@ -1,4 +1,4 @@
-package pt.uptodate.java.api;
+package api.java;
 
 import java.util.HashMap;
 

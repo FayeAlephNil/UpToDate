@@ -1,8 +1,8 @@
-package pt.uptodate.java.util;
+package main.uptodate.java.util;
 
 import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
-import pt.uptodate.java.UpToDate;
+import main.uptodate.java.UpToDate;
 
 /**
  * @author Strikingwolf

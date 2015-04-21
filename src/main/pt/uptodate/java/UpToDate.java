@@ -1,20 +1,16 @@
-package pt.uptodate.java;
+package main.uptodate.java;
 
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import net.minecraft.client.Minecraft;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import pt.uptodate.java.api.IUpdateable;
-import pt.uptodate.java.util.Logger;
-import pt.uptodate.java.util.ReflectionUtil;
+import api.java.IUpdateable;
+import main.uptodate.java.util.Logger;
+import main.uptodate.java.util.ReflectionUtil;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -46,24 +42,15 @@ public class UpToDate implements IUpdateable
 				LoadController controller = (LoadController) objController;
 				Logger.info("Got mods list");
 				for (Object mod : mods) {
-					if (mod instanceof IUpdateable) {
-						Logger.info("Checking if " + ((IUpdateable) mod).getName() + " is out of date");
-						FetchedUpdateable toBe = new FetchedUpdateable((IUpdateable) mod);
+					if (mod instanceof ModContainer && ((ModContainer) mod).getMod() instanceof IUpdateable) {
+						IUpdateable modObj = (IUpdateable) ((ModContainer) mod).getMod();
+						Logger.info("Checking if " + modObj.getName() + " is out of date");
+						FetchedUpdateable toBe = new FetchedUpdateable(modObj);
 						if (toBe.diff > 0) {
 							updates.add(toBe);
 						}
 					}
 				}
-			}
-
-			Logger.info("Checking if " + this.getName() + " is out of date");
-			FetchedUpdateable toBe = new FetchedUpdateable(this);
-			if (toBe.diff > 0) {
-				updates.add(toBe);
-			}
-
-			if (!updates.contains(toBe)) {
-				Logger.info("UpToDate is up to date!");
 			}
 
 			Logger.info("The following mods are out of date: " + StringUtils.join(updates, ','));
