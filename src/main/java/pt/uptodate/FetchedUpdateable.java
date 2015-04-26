@@ -2,9 +2,10 @@ package pt.uptodate;
 
 import org.yaml.snakeyaml.Yaml;
 import pt.api.IUpdateable;
-import pt.uptodate.util.Logger;
+import pt.uptodate.util.Util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,11 +17,15 @@ public class FetchedUpdateable {
 	public int severity;
 	public String display;
 	public String oldDisp;
+	public String url;
+
 	public int old;
 	public int version;
 	public int diff;
 
 	public IUpdateable mod;
+
+	public boolean chatted = false;
 
 	public FetchedUpdateable(IUpdateable mod) {
 		this.mod = mod;
@@ -29,14 +34,21 @@ public class FetchedUpdateable {
 		Map<String, Object> load = (Map<String, Object>) yaml.load(mod.getRemote());
 
 		auto = (Boolean) load.get("auto");
-		severity = (Integer) load.get("severity");
-		display = (String) load.get("display");
-		version = (Integer) load.get("technical");
+		url = (String) load.get("url");
+
+		List<Integer> severityL = (List<Integer>) load.get("severity");
+		List<String> displayL = (List<String>) load.get("display");
+		List<Integer> versionL = (List<Integer>) load.get("technical");
 
 		HashMap<String, String> local = mod.getLocal();
 		old = Integer.valueOf(local.get("technical"));
 		oldDisp = local.get("display");
 
 		diff = version - old;
+
+		int splitIndex = versionL.indexOf(old);
+		version = versionL.get(versionL.size() - 1);
+		display = displayL.get(versionL.size() - 1);
+		severity = Util.max(severityL.subList(splitIndex, severityL.size() - 1));
 	}
 }
