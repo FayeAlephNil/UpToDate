@@ -36,8 +36,8 @@ public class UpToDate implements IUpdateable
 {
     public static final String MOD_ID = "uptodate";
 	public static final String MOD_NAME = "UpToDate";
-    public static final String VERSION = "1.0";
-	public static final int SIMPLE_VERSION = 1;
+    public static final String VERSION = "1.1";
+	public static final int SIMPLE_VERSION = 2;
 
 	public static ArrayList<FetchedUpdateable> updates = new ArrayList<FetchedUpdateable>();
 	public static HashMap<EntityPlayer, Boolean> chatted = new HashMap<EntityPlayer, Boolean>();
