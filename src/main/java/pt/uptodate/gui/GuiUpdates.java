@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import pt.uptodate.FetchedUpdateable;
 import pt.uptodate.UpToDate;
-import pt.uptodate.util.io.WebUtils;
+import pt.uptodate.util.WebUtils;
 
 public class GuiUpdates extends GuiBase {
 
