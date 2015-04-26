@@ -2,6 +2,7 @@ package pt.uptodate;
 
 import org.yaml.snakeyaml.Yaml;
 import pt.api.IUpdateable;
+import pt.uptodate.util.Logger;
 import pt.uptodate.util.Util;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ public class FetchedUpdateable {
 
 	public boolean auto;
 	public int severity;
+	public String displaySeverity;
 	public String display;
 	public String oldDisp;
 	public String url;
@@ -32,7 +34,6 @@ public class FetchedUpdateable {
 
 		Yaml yaml = new Yaml();
 		Map<String, Object> load = (Map<String, Object>) yaml.load(mod.getRemote());
-
 		auto = (Boolean) load.get("auto");
 		url = (String) load.get("url");
 
@@ -44,11 +45,19 @@ public class FetchedUpdateable {
 		old = Integer.valueOf(local.get("technical"));
 		oldDisp = local.get("display");
 
-		diff = version - old;
-
 		int splitIndex = versionL.indexOf(old);
 		version = versionL.get(versionL.size() - 1);
 		display = displayL.get(versionL.size() - 1);
-		severity = Util.max(severityL.subList(splitIndex, severityL.size() - 1));
+		severity = Util.max(Util.after(severityL, splitIndex));
+
+		diff = version - old;
+
+		if (severity < 2) {
+			displaySeverity = "Normal";
+		} else if (severity < 3) {
+			displaySeverity = "Severe!";
+		} else {
+			displaySeverity = "Critical!!";
+		}
 	}
 }

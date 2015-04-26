@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Strikingwolf
@@ -47,5 +49,12 @@ public class Util {
 			}
 		}
 		return result;
+	}
+
+	public static <T> List<T> after(List<T> list, int index) {
+		for (int i = 0; i < index; i++) {
+			list.remove(i);
+		}
+		return list;
 	}
 }

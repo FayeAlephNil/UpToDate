@@ -21,6 +21,7 @@ import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import pt.api.IUpdateable;
 import pt.uptodate.handlers.Config;
+import pt.uptodate.handlers.GuiHandler;
 import pt.uptodate.util.Logger;
 import pt.uptodate.util.ReflectionUtil;
 import pt.uptodate.util.Util;
@@ -45,6 +46,7 @@ public class UpToDate implements IUpdateable
 	public void init(FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new Config());
+		MinecraftForge.EVENT_BUS.register(new GuiHandler());
 	}
 
 	@EventHandler
