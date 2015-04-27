@@ -7,6 +7,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,6 +42,10 @@ public class UpToDate implements IUpdateable
 
 	public static ArrayList<FetchedUpdateable> updates = new ArrayList<FetchedUpdateable>();
 	public static HashMap<EntityPlayer, Boolean> chatted = new HashMap<EntityPlayer, Boolean>();
+
+	@EventHandler void pre(FMLPreInitializationEvent event) {
+		Config.init(event.getSuggestedConfigurationFile());
+	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
