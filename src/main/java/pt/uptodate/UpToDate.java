@@ -15,19 +15,14 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraftforge.common.MinecraftForge;
-import org.apache.commons.codec.binary.Base64;
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.RepositoryContents;
-import org.eclipse.egit.github.core.service.ContentsService;
-import org.eclipse.egit.github.core.service.RepositoryService;
 import pt.api.IUpdateable;
+import pt.api.UpdateableUtils;
 import pt.uptodate.handlers.Config;
 import pt.uptodate.handlers.GuiHandler;
 import pt.uptodate.util.Logger;
 import pt.uptodate.util.ReflectionUtil;
 import pt.uptodate.util.Util;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +33,7 @@ public class UpToDate implements IUpdateable
     public static final String MOD_ID = "uptodate";
 	public static final String MOD_NAME = "UpToDate";
     public static final String VERSION = "1.1";
-	public static final int SIMPLE_VERSION = 2;
+	public static final String SIMPLE_VERSION = "2";
 
 	public static ArrayList<FetchedUpdateable> updates = new ArrayList<FetchedUpdateable>();
 	public static HashMap<EntityPlayer, Boolean> chatted = new HashMap<EntityPlayer, Boolean>();
@@ -116,17 +111,7 @@ public class UpToDate implements IUpdateable
 
 	@Override
 	public String getRemote() {
-		String result = null;
-		try {
-			ContentsService service = new ContentsService();
-			Repository repo = (new RepositoryService()).getRepository("PhoenixTeamMC", "UpToDate");
-			List codedContents = service.getContents(repo, "version.json");
-			RepositoryContents contents = (RepositoryContents) codedContents.get(0);
-			byte[] decoded = Base64.decodeBase64(contents.getContent());
-			result = new String(decoded);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String result = UpdateableUtils.fromUrlPlain("https://raw.githubusercontent.com/PhoenixTeamMC/UpToDate/master/version.json");
 		return result;
 	}
 

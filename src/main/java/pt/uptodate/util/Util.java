@@ -33,7 +33,7 @@ public class Util {
 			String next = iter.next();
 
 			if (!iter.hasNext()) {
-				result += " and ";
+				result += "and ";
 			}
 
 			result += next;

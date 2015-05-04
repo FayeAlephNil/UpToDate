@@ -1,3 +1,6 @@
+/**
+ * Credit to CoolSquid for class
+ */
 package pt.uptodate.gui;
 
 import java.awt.Desktop;
@@ -6,7 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import pt.uptodate.FetchedUpdateable;
 import pt.uptodate.UpToDate;
-import pt.uptodate.util.WebUtils;
+import pt.uptodate.util.io.WebUtils;
 
 public class GuiUpdates extends GuiBase {
 
