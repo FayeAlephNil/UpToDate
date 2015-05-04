@@ -20,7 +20,7 @@ public class UpdateableUtils {
 		if (read == null) {
 			return null;
 		} else {
-			return StringUtils.join(WebUtils.readWebsite(url), "");
+			return StringUtils.join(read, "");
 		}
 	}
 
