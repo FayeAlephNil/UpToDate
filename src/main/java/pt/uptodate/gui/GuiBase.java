@@ -1,3 +1,6 @@
+/**
+ * Credit to CoolSquid for class
+ */
 package pt.uptodate.gui;
 
 import net.minecraft.client.gui.GuiScreen;

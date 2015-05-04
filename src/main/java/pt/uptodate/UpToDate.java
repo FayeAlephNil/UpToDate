@@ -1,46 +1,44 @@
 package pt.uptodate;
 
-import cpw.mods.fml.common.LoadController;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
+import net.minecraftforge.common.MinecraftForge;
+import pt.api.IUpdateable;
+import pt.uptodate.handlers.Config;
+import pt.uptodate.handlers.GuiHandler;
+import pt.uptodate.util.Logger;
+import pt.uptodate.util.Util;
+import pt.uptodate.util.io.WebUtils;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
-import net.minecraftforge.common.MinecraftForge;
-import org.apache.commons.codec.binary.Base64;
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.RepositoryContents;
-import org.eclipse.egit.github.core.service.ContentsService;
-import org.eclipse.egit.github.core.service.RepositoryService;
-import pt.api.IUpdateable;
-import pt.uptodate.handlers.Config;
-import pt.uptodate.handlers.GuiHandler;
-import pt.uptodate.util.Logger;
-import pt.uptodate.util.ReflectionUtil;
-import pt.uptodate.util.Util;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 @Mod(modid = UpToDate.MOD_ID, version = UpToDate.VERSION, name = UpToDate.MOD_NAME)
 public class UpToDate implements IUpdateable
 {
-    public static final String MOD_ID = "uptodate";
+	public static final String MOD_ID = "uptodate";
 	public static final String MOD_NAME = "UpToDate";
-    public static final String VERSION = "1.1";
-	public static final int SIMPLE_VERSION = 2;
+	public static final String VERSION = "1.1";
+	public static final String SIMPLE_VERSION = "2";
 
 	public static ArrayList<FetchedUpdateable> updates = new ArrayList<FetchedUpdateable>();
 	public static HashMap<EntityPlayer, Boolean> chatted = new HashMap<EntityPlayer, Boolean>();
+
+	@EventHandler void pre(FMLPreInitializationEvent event) {
+		Config.init(event.getSuggestedConfigurationFile());
+	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
@@ -52,26 +50,27 @@ public class UpToDate implements IUpdateable
 	@EventHandler
 	public void complete(FMLLoadCompleteEvent event) {
 		if (Util.netIsAvailable()) {
-			Object objMods = ReflectionUtil.getFieldValFromObj(Loader.instance(), "mods");
-			Object objController = ReflectionUtil.getFieldValFromObj(Loader.instance(), "modController");
-
-			if (objController instanceof LoadController && objMods instanceof List) {
-				List mods = (List) objMods;
-				Logger.info("Got mods list");
-				for (Object mod : mods) {
-					if (mod instanceof ModContainer && ((ModContainer) mod).getMod() instanceof IUpdateable) {
-						IUpdateable modObj = (IUpdateable) ((ModContainer) mod).getMod();
-						FetchedUpdateable toBe = new FetchedUpdateable(modObj);
-						if (toBe.diff > 0) {
-							updates.add(toBe);
-						}
+			for (ModContainer mod : Loader.instance().getActiveModList()) {
+				if (mod.getMod() instanceof IUpdateable) {
+					FetchedUpdateable toBe = new FetchedUpdateable((IUpdateable) mod.getMod());
+					if (toBe.diff > 0) {
+						updates.add(toBe);
 					}
 				}
 			}
-			ArrayList<String> updateNames = new ArrayList<String>();
-			for (FetchedUpdateable fetched : updates)
-				updateNames.add(fetched.mod.getName());
-			Logger.info("The following mods are out of date: " + Util.joinAnd(updateNames));
+			StringBuilder b = new StringBuilder();
+			Iterator<FetchedUpdateable> i = updates.iterator();
+			while (i.hasNext()) {
+				FetchedUpdateable fetched = i.next();
+				if (i.hasNext()) {
+					b.append(", ");
+				}
+				else {
+					b.append(" and ");
+				}
+				b.append(fetched.mod.getName());
+			}
+			Logger.info("The following mods are out of date: " + b.substring(2));
 		}
 	}
 
@@ -81,11 +80,8 @@ public class UpToDate implements IUpdateable
 		if (chatted.get(player) != null && !chatted.get(player) && player.worldObj.isRemote && !updates.isEmpty() && Config.chat) {
 			ChatComponentText text = new ChatComponentText("There are critical updates available, click the mod name to download it: ");
 			for (int i = 0; i < updates.size(); i++) {
-				String ending = ", ";
 				if (i + 1 == updates.size()) {
-					ending = "";
 				} else if (i + 2 == updates.size()) {
-					ending = ", and ";
 				}
 
 				FetchedUpdateable fetched = updates.get(i);
@@ -111,18 +107,7 @@ public class UpToDate implements IUpdateable
 
 	@Override
 	public String getRemote() {
-		String result = null;
-		try {
-			ContentsService service = new ContentsService();
-			Repository repo = (new RepositoryService()).getRepository("PhoenixTeamMC", "UpToDate");
-			List codedContents = service.getContents(repo, "version.json");
-			RepositoryContents contents = (RepositoryContents) codedContents.get(0);
-			byte[] decoded = Base64.decodeBase64(contents.getContent());
-			result = new String(decoded);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return result;
+		return WebUtils.readAll("https://raw.githubusercontent.com/PhoenixTeamMC/UpToDate/master/version.json");
 	}
 
 	@Override

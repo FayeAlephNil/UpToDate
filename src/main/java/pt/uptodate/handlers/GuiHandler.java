@@ -1,7 +1,7 @@
 package pt.uptodate.handlers;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import java.util.ArrayList;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -11,8 +11,8 @@ import pt.uptodate.FetchedUpdateable;
 import pt.uptodate.UpToDate;
 import pt.uptodate.gui.GuiUpdates;
 import pt.uptodate.util.Util;
-
-import java.util.ArrayList;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class GuiHandler {
 	@SuppressWarnings("unchecked")

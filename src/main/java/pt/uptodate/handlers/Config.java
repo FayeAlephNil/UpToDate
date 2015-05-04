@@ -12,6 +12,7 @@ public class Config {
 	public static Configuration configuration;
 
 	public static boolean chat = false;
+	public static boolean severe = false;
 
 	public static void init(File configFile) {
 
@@ -35,6 +36,7 @@ public class Config {
 	private static void loadConfiguration()
 	{
 		chat = configuration.getBoolean("chat", Configuration.CATEGORY_GENERAL, false, "Setting this to true will turn on chat update notifications");
+		severe = configuration.getBoolean("severe", Configuration.CATEGORY_GENERAL, false, "Setting this to false will turn off severe updates stopping loading");
 
 		if (configuration.hasChanged())
 		{

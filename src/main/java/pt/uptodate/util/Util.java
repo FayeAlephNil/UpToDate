@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * @author Strikingwolf
  */
+
 public class Util {
 	public static boolean netIsAvailable() {
 		try {
@@ -28,12 +28,12 @@ public class Util {
 	public static String joinAnd(Iterable<String> strings) {
 		String result = null;
 		Iterator<String> iter = strings.iterator();
-		for (int i = 0; iter.hasNext(); i++) {
+		while (iter.hasNext()) {
 			result += ", ";
 			String next = iter.next();
 
 			if (!iter.hasNext()) {
-				result += " and ";
+				result += "and ";
 			}
 
 			result += next;
