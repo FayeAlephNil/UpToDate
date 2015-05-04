@@ -1,7 +1,7 @@
 {
-  "display": ["1.0", "1.1", "1.2"],
-  "technical": [1, 2, 3],
-  "severity": [1, 3, 3],
+  "display": ["1.0"],
+  "technical": [1],
+  "severity": [1],
 
   "auto": true,
   "url": "http://google.com"

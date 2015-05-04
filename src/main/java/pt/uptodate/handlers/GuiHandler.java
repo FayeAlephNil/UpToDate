@@ -28,17 +28,24 @@ public class GuiHandler {
 
 				int max = Util.max(severities);
 
-				if (Util.max(severities) < 3 && max >= 2) {
-					mostSevere = " (!)";
-				} else {
+				if (max > 1) {
+					GuiScreen screen = new GuiUpdates(UpToDate.updates, "To Main Menu", "There are severe and/or critical updates available:");
+					Minecraft.getMinecraft().displayGuiScreen(screen);
+				}
+
+				if (Util.max(severities) >= 3) {
 					mostSevere = " (!!)";
+				} else if (max >= 2) {
+					mostSevere = " (!!)";
+				} else {
+					mostSevere = "";
 				}
 			}
 
 			GuiButton button = new GuiButton(10, 10, 0, "Updates " + "(" + UpToDate.updates.size() + ")" + mostSevere) {
 				@Override
 				public void mouseReleased(int p_146118_1_, int p_146118_2_) {
-					GuiScreen screen = new GuiUpdates();
+					GuiScreen screen = new GuiUpdates(UpToDate.updates, "Return", "Available updates:");
 					Minecraft.getMinecraft().displayGuiScreen(screen);
 				}
 			};

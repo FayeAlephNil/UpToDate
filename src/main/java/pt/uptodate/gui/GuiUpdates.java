@@ -1,6 +1,7 @@
 package pt.uptodate.gui;
 
 import java.awt.Desktop;
+import java.util.Iterator;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -13,18 +14,28 @@ import pt.uptodate.util.io.WebUtils;
  */
 
 public class GuiUpdates extends GuiBase {
+	private final Iterable<FetchedUpdateable> updates;
+	private final String returnMessage;
+	private final String updatesAvailable;
+
+	public GuiUpdates(Iterable<FetchedUpdateable> updates, String returnMessage, String updatesAvailable) {
+		super();
+		this.updates = updates;
+		this.returnMessage = returnMessage;
+		this.updatesAvailable = updatesAvailable;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void initGui() {
 		int a = 0;
-		for (FetchedUpdateable fetched : UpToDate.updates) {
+		for (FetchedUpdateable fetched : updates) {
 			GuiButton b = new GuiButtonMod(1, 0, this.height / 2 - 20 + a, fetched.mod.getName() + " " + fetched.display + " (" + fetched.displaySeverity + ")", fetched);
 			b.xPosition = this.width / 2 - (b.width / 2);
 			this.buttonList.add(b);
 			a += b.height + 4;
 		}
-		GuiButton button = new GuiButton(0, 10, 0, "Return");
+		GuiButton button = new GuiButton(0, 10, 0, returnMessage);
 		button.yPosition = this.height - button.height - 10;
 		button.width = 50;
 		this.buttonList.add(button);
@@ -38,7 +49,7 @@ public class GuiUpdates extends GuiBase {
 			this.drawString("No updates available.", this.width / 2, this.height / 2);
 		}
 		else {
-			String line1 = "Available updates:";
+			String line1 = updatesAvailable;
 			this.drawCenteredString(this.fontRendererObj, line1, this.width / 2, this.height / 2 - 60, 16777215);
 		}
 		if (!Desktop.isDesktopSupported()) {
