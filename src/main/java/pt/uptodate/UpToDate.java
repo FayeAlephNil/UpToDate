@@ -52,22 +52,14 @@ public class UpToDate implements IUpdateable
 	@EventHandler
 	public void complete(FMLLoadCompleteEvent event) {
 		if (Util.netIsAvailable()) {
-			Object objMods = ReflectionUtil.getFieldValFromObj(Loader.instance(), "mods");
-			Object objController = ReflectionUtil.getFieldValFromObj(Loader.instance(), "modController");
-
-			if (objController instanceof LoadController && objMods instanceof List) {
-				List mods = (List) objMods;
-				Logger.info("Got mods list");
-				for (Object mod : mods) {
-					if (mod instanceof ModContainer && ((ModContainer) mod).getMod() instanceof IUpdateable) {
-						IUpdateable modObj = (IUpdateable) ((ModContainer) mod).getMod();
-						FetchedUpdateable toBe = new FetchedUpdateable(modObj);
-						if (toBe.diff > 0) {
-							updates.add(toBe);
-						}
-					}
+			for (ModContainer mod : Loader.instance().getActiveModList()) {
+				IUpdateable modObj = (IUpdateable) mod.getMod();
+				FetchedUpdateable toBe = new FetchedUpdateable(modObj);
+				if (toBe.diff > 0) {
+					updates.add(toBe);
 				}
 			}
+
 			ArrayList<String> updateNames = new ArrayList<String>();
 			for (FetchedUpdateable fetched : updates)
 				updateNames.add(fetched.mod.getName());
