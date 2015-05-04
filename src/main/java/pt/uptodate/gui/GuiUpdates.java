@@ -1,6 +1,3 @@
-/**
- * Credit to CoolSquid for class
- */
 package pt.uptodate.gui;
 
 import java.awt.Desktop;
