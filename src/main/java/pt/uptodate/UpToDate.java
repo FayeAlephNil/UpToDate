@@ -1,15 +1,9 @@
 package pt.uptodate;
 
-import cpw.mods.fml.common.LoadController;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
@@ -20,19 +14,23 @@ import pt.api.UpdateableUtils;
 import pt.uptodate.handlers.Config;
 import pt.uptodate.handlers.GuiHandler;
 import pt.uptodate.util.Logger;
-import pt.uptodate.util.ReflectionUtil;
 import pt.uptodate.util.Util;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 
 @Mod(modid = UpToDate.MOD_ID, version = UpToDate.VERSION, name = UpToDate.MOD_NAME)
 public class UpToDate implements IUpdateable
 {
-    public static final String MOD_ID = "uptodate";
+	public static final String MOD_ID = "uptodate";
 	public static final String MOD_NAME = "UpToDate";
-    public static final String VERSION = "1.1";
+	public static final String VERSION = "1.1";
 	public static final String SIMPLE_VERSION = "2";
 
 	public static ArrayList<FetchedUpdateable> updates = new ArrayList<FetchedUpdateable>();
@@ -53,17 +51,26 @@ public class UpToDate implements IUpdateable
 	public void complete(FMLLoadCompleteEvent event) {
 		if (Util.netIsAvailable()) {
 			for (ModContainer mod : Loader.instance().getActiveModList()) {
-				IUpdateable modObj = (IUpdateable) mod.getMod();
-				FetchedUpdateable toBe = new FetchedUpdateable(modObj);
-				if (toBe.diff > 0) {
-					updates.add(toBe);
+				if (mod.getMod() instanceof IUpdateable) {
+					FetchedUpdateable toBe = new FetchedUpdateable((IUpdateable) mod.getMod());
+					if (toBe.diff > 0) {
+						updates.add(toBe);
+					}
 				}
 			}
-
-			ArrayList<String> updateNames = new ArrayList<String>();
-			for (FetchedUpdateable fetched : updates)
-				updateNames.add(fetched.mod.getName());
-			Logger.info("The following mods are out of date: " + Util.joinAnd(updateNames));
+			StringBuilder b = new StringBuilder();
+			Iterator<FetchedUpdateable> i = updates.iterator();
+			while (i.hasNext()) {
+				FetchedUpdateable fetched = i.next();
+				if (i.hasNext()) {
+					b.append(", ");
+				}
+				else {
+					b.append(" and ");
+				}
+				b.append(fetched.mod.getName());
+			}
+			Logger.info("The following mods are out of date: " + b.substring(2));
 		}
 	}
 
@@ -73,11 +80,8 @@ public class UpToDate implements IUpdateable
 		if (chatted.get(player) != null && !chatted.get(player) && player.worldObj.isRemote && !updates.isEmpty() && Config.chat) {
 			ChatComponentText text = new ChatComponentText("There are critical updates available, click the mod name to download it: ");
 			for (int i = 0; i < updates.size(); i++) {
-				String ending = ", ";
 				if (i + 1 == updates.size()) {
-					ending = "";
 				} else if (i + 2 == updates.size()) {
-					ending = ", and ";
 				}
 
 				FetchedUpdateable fetched = updates.get(i);
@@ -103,8 +107,7 @@ public class UpToDate implements IUpdateable
 
 	@Override
 	public String getRemote() {
-		String result = UpdateableUtils.fromUrlPlain("https://raw.githubusercontent.com/PhoenixTeamMC/UpToDate/master/version.json");
-		return result;
+		return UpdateableUtils.fromUrlToText("https://raw.githubusercontent.com/PhoenixTeamMC/UpToDate/master/version.json");
 	}
 
 	@Override

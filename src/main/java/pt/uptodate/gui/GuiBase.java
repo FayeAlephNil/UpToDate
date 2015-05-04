@@ -1,11 +1,12 @@
-/**
- * Credit to CoolSquid for class
- */
 package pt.uptodate.gui;
 
 import net.minecraft.client.gui.GuiScreen;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+/**
+ * @author CoolSquid
+ */
 
 @SideOnly(Side.CLIENT)
 public class GuiBase extends GuiScreen {

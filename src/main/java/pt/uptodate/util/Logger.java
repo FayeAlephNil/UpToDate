@@ -1,16 +1,20 @@
 package pt.uptodate.util;
 
-import cpw.mods.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+
 import pt.uptodate.UpToDate;
 
 /**
  * @author Strikingwolf
  */
 public class Logger {
+
+	private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(UpToDate.MOD_NAME);
+
 	public static void log(Level logLevel, Object object)
 	{
-		FMLLog.log(UpToDate.MOD_NAME, logLevel, String.valueOf(object));
+		LOGGER.log(logLevel, String.valueOf(object));
 	}
 
 	public static void all(Object object)
