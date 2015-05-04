@@ -10,11 +10,11 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraftforge.common.MinecraftForge;
 import pt.api.IUpdateable;
+import pt.api.UpdateableUtils;
 import pt.uptodate.handlers.Config;
 import pt.uptodate.handlers.GuiHandler;
 import pt.uptodate.util.Logger;
 import pt.uptodate.util.Util;
-import pt.uptodate.util.io.WebUtils;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -107,7 +107,7 @@ public class UpToDate implements IUpdateable
 
 	@Override
 	public String getRemote() {
-		return WebUtils.readAll("https://raw.githubusercontent.com/PhoenixTeamMC/UpToDate/master/version.json");
+		return UpdateableUtils.fromUrlToText("https://raw.githubusercontent.com/PhoenixTeamMC/UpToDate/master/version.json");
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import pt.uptodate.util.Util;
 /**
  * @author Strikingwolf
  */
+
 public class FetchedUpdateable {
 
 	public boolean auto;
