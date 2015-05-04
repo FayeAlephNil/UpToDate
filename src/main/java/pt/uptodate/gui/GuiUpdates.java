@@ -37,7 +37,7 @@ public class GuiUpdates extends GuiBase {
 		}
 		GuiButton button = new GuiButton(0, 10, 0, returnMessage);
 		button.yPosition = this.height - button.height - 10;
-		button.width = 50;
+		button.width = 100;
 		this.buttonList.add(button);
 	}
 

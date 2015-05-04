@@ -15,6 +15,8 @@ import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class GuiHandler {
+	private boolean mainLaunched = false;
+
 	@SuppressWarnings("unchecked")
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onGuiInit(GuiScreenEvent.InitGuiEvent event) {
@@ -28,7 +30,7 @@ public class GuiHandler {
 
 				int max = Util.max(severities);
 
-				if (max > 1) {
+				if (max > 1 && !mainLaunched) {
 					GuiScreen screen = new GuiUpdates(UpToDate.updates, "To Main Menu", "There are severe and/or critical updates available:");
 					Minecraft.getMinecraft().displayGuiScreen(screen);
 				}
@@ -54,6 +56,8 @@ public class GuiHandler {
 			button.height = 13;
 			button.width =  98;
 			event.buttonList.add(button);
+
+			mainLaunched = true;
 		}
 	}
 }
