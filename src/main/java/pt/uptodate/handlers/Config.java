@@ -35,8 +35,7 @@ public class Config {
 
 	private static void loadConfiguration()
 	{
-		// TODO implement marquee, then remove boolean
-		boolean chat = configuration.getBoolean("chat", Configuration.CATEGORY_GENERAL, false, "Setting this to true will turn on chat update notifications (currently disabled due to no marquee)");
+		chat = configuration.getBoolean("chat", Configuration.CATEGORY_GENERAL, false, "Setting this to true will turn on chat update notifications (currently disabled due to no marquee)");
 		severe = configuration.getBoolean("severe", Configuration.CATEGORY_GENERAL, true, "Setting this to false will turn off severe updates stopping loading");
 
 		if (configuration.hasChanged())
