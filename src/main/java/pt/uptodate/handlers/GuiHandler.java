@@ -1,5 +1,6 @@
 package pt.uptodate.handlers;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
@@ -21,36 +22,29 @@ public class GuiHandler {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onGuiInit(GuiScreenEvent.InitGuiEvent event) {
 		if (event.gui instanceof GuiMainMenu) {
-			String mostSevere = "";
+			Integer mostSevere = null;
 			if (UpToDate.updates.size() > 0) {
-				ArrayList<Integer> severities = new ArrayList<Integer>();
-				for (FetchedUpdateable fetched : UpToDate.updates) {
-					severities.add(fetched.severity);
-				}
-
-				int max = Util.max(severities);
-
-				if (max > 1 && !mainLaunched) {
+				if (!UpToDate.updates.severe.isEmpty() && !mainLaunched && Config.severe) {
 					GuiScreen screen = new GuiUpdates(UpToDate.updates, "To Main Menu", "There are severe and/or critical updates available:");
 					Minecraft.getMinecraft().displayGuiScreen(screen);
 				}
 
-				if (Util.max(severities) >= 3) {
-					mostSevere = " (!!)";
-				} else if (max >= 2) {
-					mostSevere = " (!!)";
-				} else {
-					mostSevere = "";
+				if (!UpToDate.updates.critical.isEmpty()) {
+					mostSevere = Color.RED.getRGB();
+				} else if (!UpToDate.updates.severe.isEmpty()) {
+					mostSevere = Color.YELLOW.getRGB();
 				}
 			}
 
-			GuiButton button = new GuiButton(10, 10, 0, "Updates " + "(" + UpToDate.updates.size() + ")" + mostSevere) {
+			GuiButton button = new GuiButton(10, 10, 0, "Updates " + "(" + UpToDate.updates.size() + ")") {
 				@Override
 				public void mouseReleased(int p_146118_1_, int p_146118_2_) {
 					GuiScreen screen = new GuiUpdates(UpToDate.updates, "Return", "Available updates:");
 					Minecraft.getMinecraft().displayGuiScreen(screen);
 				}
 			};
+			if (mostSevere != null)
+				button.packedFGColour = mostSevere;
 			button.yPosition = event.gui.height - 62;
 			button.xPosition = event.gui.width/2 - button.width/4;
 			button.height = 13;

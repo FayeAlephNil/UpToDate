@@ -1,7 +1,6 @@
 package pt.uptodate.gui;
 
-import java.awt.Desktop;
-import java.util.Iterator;
+import java.awt.*;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -30,7 +29,7 @@ public class GuiUpdates extends GuiBase {
 	public void initGui() {
 		int a = 0;
 		for (FetchedUpdateable fetched : updates) {
-			GuiButton b = new GuiButtonMod(1, 0, this.height / 2 - 20 + a, fetched.mod.getName() + " " + fetched.display + " (" + fetched.displaySeverity + ")", fetched);
+			GuiButton b = new GuiButtonMod(1, 0, this.height / 2 - 20 + a, fetched.mod.getName() + " " + fetched.oldDisp + "/" + fetched.display, fetched);
 			b.xPosition = this.width / 2 - (b.width / 2);
 			this.buttonList.add(b);
 			a += b.height + 4;
@@ -75,6 +74,11 @@ public class GuiUpdates extends GuiBase {
 
 		public GuiButtonMod(int id, int x, int y, String name, FetchedUpdateable mod) {
 			super(id, x, y, name);
+			if (mod.severity >= 3) {
+				this.packedFGColour = Color.RED.getRGB();
+			} else if (mod.severity >= 2) {
+				this.packedFGColour = Color.YELLOW.getRGB();
+			}
 			this.mod = mod;
 		}
 
