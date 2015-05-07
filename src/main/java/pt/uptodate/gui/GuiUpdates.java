@@ -1,6 +1,7 @@
 package pt.uptodate.gui;
 
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -59,8 +60,11 @@ public class GuiUpdates extends GuiBase {
 	@Override
 	protected void actionPerformed(GuiButton button) {
 		if (button.id == 1) {
+			String url = ((GuiButtonMod) button).getMod().url;
 			if (Desktop.isDesktopSupported()) {
-				WebUtils.openBrowser(((GuiButtonMod) button).getMod().url);
+				WebUtils.openBrowser(url);
+			} else {
+				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(url), null);
 			}
 		}
 		else if (button.id == 0) {
