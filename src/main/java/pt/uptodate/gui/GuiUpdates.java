@@ -5,6 +5,7 @@ import java.awt.datatransfer.StringSelection;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import pt.uptodate.FetchedUpdateable;
 import pt.uptodate.UpToDate;
 import pt.uptodate.util.io.WebUtils;
@@ -64,7 +65,7 @@ public class GuiUpdates extends GuiBase {
 			if (Desktop.isDesktopSupported()) {
 				WebUtils.openBrowser(url);
 			} else {
-				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(url), null);
+				GuiScreen.setClipboardString(url);
 			}
 		}
 		else if (button.id == 0) {
