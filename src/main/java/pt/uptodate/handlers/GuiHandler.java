@@ -1,19 +1,16 @@
 package pt.uptodate.handlers;
 
-import java.awt.Color;
-import java.util.ArrayList;
-
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import pt.uptodate.FetchedUpdateable;
 import pt.uptodate.UpToDate;
 import pt.uptodate.gui.GuiUpdates;
-import pt.uptodate.util.Util;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+
+import java.awt.*;
 
 public class GuiHandler {
 	private boolean mainLaunched = false;
@@ -24,14 +21,14 @@ public class GuiHandler {
 		if (event.gui instanceof GuiMainMenu) {
 			Integer mostSevere = null;
 			if (UpToDate.updates.size() > 0) {
-				if (!UpToDate.updates.severe.isEmpty() && !mainLaunched && Config.severe) {
+				if (!UpToDate.updates.getSevere().isEmpty() && !mainLaunched && Config.severe) {
 					GuiScreen screen = new GuiUpdates(UpToDate.updates, "To Main Menu", "There are severe and/or critical updates available:");
 					Minecraft.getMinecraft().displayGuiScreen(screen);
 				}
 
-				if (!UpToDate.updates.critical.isEmpty()) {
+				if (!UpToDate.updates.getCritical().isEmpty()) {
 					mostSevere = Color.RED.getRGB();
-				} else if (!UpToDate.updates.severe.isEmpty()) {
+				} else if (!UpToDate.updates.getSevere().isEmpty()) {
 					mostSevere = Color.YELLOW.getRGB();
 				}
 			}

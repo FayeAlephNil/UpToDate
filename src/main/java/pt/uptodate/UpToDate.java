@@ -1,25 +1,6 @@
 package pt.uptodate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import pt.api.IUpdateable;
-import pt.api.UpdateableUtils;
-import pt.uptodate.handlers.Config;
-import pt.uptodate.handlers.GuiHandler;
-import pt.uptodate.util.Logger;
-import pt.uptodate.util.Util;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -28,6 +9,23 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.common.MinecraftForge;
+import pt.api.IUpdateable;
+import pt.api.UpdateableUtils;
+import pt.uptodate.handlers.Config;
+import pt.uptodate.handlers.GuiHandler;
+import pt.uptodate.util.Logger;
+import pt.uptodate.util.Util;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 @Mod(modid = UpToDate.MOD_ID, version = UpToDate.VERSION, name = UpToDate.MOD_NAME)
 public class UpToDate implements IUpdateable
@@ -58,10 +56,7 @@ public class UpToDate implements IUpdateable
 		if (Util.netIsAvailable()) {
 			for (ModContainer mod : Loader.instance().getActiveModList()) {
 				if (mod.getMod() instanceof IUpdateable) {
-					FetchedUpdateable toBe = new FetchedUpdateable((IUpdateable) mod.getMod());
-					if (toBe.diff > 0) {
-						updates.add(toBe);
-					}
+					registerUpdateable((IUpdateable) mod.getMod());
 				}
 			}
 			StringBuilder b = new StringBuilder();
@@ -81,24 +76,30 @@ public class UpToDate implements IUpdateable
 	}
 
 	@SubscribeEvent
-	public void onPlayerTick(PlayerEvent.PlayerLoggedInEvent event) {
-		EntityPlayer player = event.player;
+	public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+		if (!event.player.worldObj.isRemote && event.player instanceof EntityPlayerMP) {
+			EntityPlayerMP player = (EntityPlayerMP) event.player;
 
-		// TODO implement marquee, then remove comments
-		if ((chatted.get(player) == null || !chatted.get(player)) && !player.worldObj.isRemote && !updates.critical.isEmpty() /* && Config.chat*/) {
-			ChatComponentText text = new ChatComponentText("There are critical updates available, click the mod name to download the update: ");
-			text.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED));
-			for (FetchedUpdateable fetched : updates) {
-				ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, fetched.url);
-				ChatStyle style = new ChatStyle().setChatClickEvent(click);
-				ChatComponentText modText = new ChatComponentText(fetched.mod.getName() + "");
-				modText.setChatStyle(style);
-				text.appendSibling(modText);
+			boolean chattedBools = (chatted.get(player) == null || !chatted.get(player));
+			boolean criticals = !updates.getCritical().isEmpty();
+			boolean singlePlayer = player.mcServer.isSinglePlayer();
+			boolean isOp = player.mcServer.getOpPermissionLevel() <= 2;
+			// TODO implement marquee, then remove comments
+			if (chattedBools && criticals && (isOp || singlePlayer) /* && Config.chat*/) {
+				ChatComponentText text = new ChatComponentText("There are critical updates available, click the mod name to download the update: ");
+				text.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED));
+				for (FetchedUpdateable fetched : updates) {
+					ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, fetched.url);
+					ChatStyle style = new ChatStyle().setChatClickEvent(click);
+					ChatComponentText modText = new ChatComponentText(fetched.mod.getName() + "");
+					modText.setChatStyle(style);
+					text.appendSibling(modText);
+				}
+
+				player.addChatComponentMessage(text);
+
+				chatted.put(player, true);
 			}
-
-			player.addChatComponentMessage(text);
-
-			chatted.put(player, true);
 		}
 	}
 
@@ -119,5 +120,16 @@ public class UpToDate implements IUpdateable
 		result.put("technical", String.valueOf(SIMPLE_VERSION));
 		result.put("display", VERSION);
 		return result;
+	}
+
+	/**
+	 * Registers an updateable to uptodate's registries
+	 * @param updateable the IUpdateable to register
+	 */
+	public void registerUpdateable(IUpdateable updateable) {
+		FetchedUpdateable toBe = new FetchedUpdateable(updateable);
+		if (toBe.diff > 0) {
+			updates.add(toBe);
+		}
 	}
 }

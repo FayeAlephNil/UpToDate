@@ -1,13 +1,12 @@
 package pt.api;
 
+import org.yaml.snakeyaml.Yaml;
+import pt.uptodate.util.io.IOUtils;
+import pt.uptodate.util.io.WebUtils;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.yaml.snakeyaml.Yaml;
-
-import pt.uptodate.util.io.IOUtils;
-import pt.uptodate.util.io.WebUtils;
 
 /**
  * @author Strikingwolf

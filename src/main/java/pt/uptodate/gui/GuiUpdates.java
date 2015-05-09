@@ -1,14 +1,13 @@
 package pt.uptodate.gui;
 
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import pt.uptodate.FetchedUpdateable;
 import pt.uptodate.UpToDate;
 import pt.uptodate.util.io.WebUtils;
+
+import java.awt.*;
 
 /**
  * @author CoolSquid

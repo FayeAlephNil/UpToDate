@@ -1,13 +1,12 @@
 package pt.uptodate;
 
+import org.yaml.snakeyaml.Yaml;
+import pt.api.IUpdateable;
+import pt.uptodate.util.Util;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.yaml.snakeyaml.Yaml;
-
-import pt.api.IUpdateable;
-import pt.uptodate.util.Util;
 
 /**
  * @author Strikingwolf
@@ -15,16 +14,16 @@ import pt.uptodate.util.Util;
 
 public class FetchedUpdateable {
 
-	public boolean auto;
-	public int severity;
-	public String displaySeverity;
-	public String display;
-	public String oldDisp;
-	public String url;
+	public final boolean auto;
+	public final int severity;
+	public final String displaySeverity;
+	public final String display;
+	public final String oldDisp;
+	public final String url;
 
-	public int old;
-	public int version;
-	public int diff;
+	public final int old;
+	public final int version;
+	public final int diff;
 
 	public IUpdateable mod;
 
