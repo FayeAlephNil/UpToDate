@@ -87,13 +87,19 @@ public class UpToDate implements IUpdateable
 			// TODO implement marquee, then remove comments
 			if (chattedBools && criticals && (isOp || singlePlayer) /* && Config.chat*/) {
 				ChatComponentText text = new ChatComponentText("There are critical updates available, click the mod name to download the update: ");
-				text.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED));
-				for (FetchedUpdateable fetched : updates) {
+
+				for (FetchedUpdateable fetched : updates.critical) {
 					ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, fetched.url);
 					ChatStyle style = new ChatStyle().setChatClickEvent(click);
 					ChatComponentText modText = new ChatComponentText(fetched.mod.getName() + "");
 					modText.setChatStyle(style);
 					text.appendSibling(modText);
+				}
+
+				if (Config.colorblind) {
+					text.appendSibling(new ChatComponentText("!!!"));
+				} else {
+					text.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED));
 				}
 
 				player.addChatComponentMessage(text);

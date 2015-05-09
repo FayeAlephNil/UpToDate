@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import pt.uptodate.FetchedUpdateable;
 import pt.uptodate.UpToDate;
+import pt.uptodate.handlers.Config;
 import pt.uptodate.util.io.WebUtils;
 
 import java.awt.*;
@@ -53,7 +54,7 @@ public class GuiUpdates extends GuiBase {
 			this.drawCenteredString(this.fontRendererObj, line1, this.width / 2, this.height / 2 - 60, 16777215);
 		}
 		if (!Desktop.isDesktopSupported()) {
-			this.drawString("Your desktop is not supported. The buttons will not be clickable.", this.width / 2, 20);
+			this.drawString("Your desktop is not supported. The buttons will copy the url to your clipboard", this.width / 2, 20);
 		}
 	}
 
@@ -78,10 +79,15 @@ public class GuiUpdates extends GuiBase {
 
 		public GuiButtonMod(int id, int x, int y, String name, FetchedUpdateable mod) {
 			super(id, x, y, name);
-			if (mod.severity >= 3) {
-				this.packedFGColour = Color.RED.getRGB();
-			} else if (mod.severity >= 2) {
-				this.packedFGColour = Color.YELLOW.getRGB();
+			if (Config.colorblind) {
+				this.displayString = this.displayString + " (" + mod.displaySeverity + ")";
+			} else {
+				if (mod.severity >= 3) {
+
+					this.packedFGColour = Color.RED.getRGB();
+				} else if (mod.severity >= 2) {
+					this.packedFGColour = Color.YELLOW.getRGB();
+				}
 			}
 			this.mod = mod;
 		}

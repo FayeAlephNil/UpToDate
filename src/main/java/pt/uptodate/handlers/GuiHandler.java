@@ -19,6 +19,7 @@ public class GuiHandler {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onGuiInit(GuiScreenEvent.InitGuiEvent event) {
 		if (event.gui instanceof GuiMainMenu) {
+			String most = "";
 			Integer mostSevere = null;
 			if (UpToDate.updates.size() > 0) {
 				if (!UpToDate.updates.getSevere().isEmpty() && !mainLaunched && Config.severe) {
@@ -27,20 +28,26 @@ public class GuiHandler {
 				}
 
 				if (!UpToDate.updates.getCritical().isEmpty()) {
+					if (Config.colorblind) {
+						most = " (!!)";
+					}
 					mostSevere = Color.RED.getRGB();
 				} else if (!UpToDate.updates.getSevere().isEmpty()) {
+					if (Config.colorblind) {
+						most = " (!)";
+					}
 					mostSevere = Color.YELLOW.getRGB();
 				}
 			}
 
-			GuiButton button = new GuiButton(10, 10, 0, "Updates " + "(" + UpToDate.updates.size() + ")") {
+			GuiButton button = new GuiButton(10, 10, 0, "Updates " + "(" + UpToDate.updates.size() + ")" + most) {
 				@Override
 				public void mouseReleased(int p_146118_1_, int p_146118_2_) {
 					GuiScreen screen = new GuiUpdates(UpToDate.updates, "Return", "Available updates:");
 					Minecraft.getMinecraft().displayGuiScreen(screen);
 				}
 			};
-			if (mostSevere != null)
+			if (mostSevere != null && !Config.colorblind)
 				button.packedFGColour = mostSevere;
 			button.yPosition = event.gui.height - 62;
 			button.xPosition = event.gui.width/2 - button.width/4;

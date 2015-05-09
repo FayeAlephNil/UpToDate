@@ -13,6 +13,7 @@ public class Config {
 
 	public static boolean chat = false;
 	public static boolean severe = true;
+	public static boolean colorblind = false;
 
 	public static void init(File configFile) {
 
@@ -37,6 +38,7 @@ public class Config {
 	{
 		chat = configuration.getBoolean("chat", Configuration.CATEGORY_GENERAL, false, "Setting this to true will turn on chat update notifications (currently disabled due to no marquee)");
 		severe = configuration.getBoolean("severe", Configuration.CATEGORY_GENERAL, true, "Setting this to false will turn off severe updates stopping loading");
+		colorblind = configuration.getBoolean("colorblind", Configuration.CATEGORY_GENERAL, false, "Setting this to true will disable colors and add in markers");
 
 		if (configuration.hasChanged())
 		{
