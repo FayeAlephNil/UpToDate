@@ -144,7 +144,7 @@ public class UpToDate implements IUpdateable
 	 * Registers an updateable to uptodate's registries
 	 * @param updateable the IUpdateable to register
 	 */
-	public void registerUpdateable(IUpdateable updateable) {
+	public static void registerUpdateable(IUpdateable updateable) {
 		FetchedUpdateable toBe = new FetchedUpdateable(updateable);
 		if (toBe.diff > 0) {
 			updates.add(toBe);
