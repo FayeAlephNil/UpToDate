@@ -36,8 +36,8 @@ public class Config {
 
 	private static void loadConfiguration()
 	{
-		chat = configuration.getBoolean("chat", Configuration.CATEGORY_GENERAL, false, "Setting this to true will turn on chat update notifications (currently disabled due to no marquee)");
-		severe = configuration.getBoolean("severe", Configuration.CATEGORY_GENERAL, true, "Setting this to false will turn off severe updates stopping loading");
+		chat = configuration.getBoolean("chat", Configuration.CATEGORY_GENERAL, false, "Setting this to true will turn on chat update notifications and disable the click-to-advance screen");
+		severe = configuration.getBoolean("severe", Configuration.CATEGORY_GENERAL, true, "Setting this to false will turn off severe and critical updates stopping loading");
 		colorblind = configuration.getBoolean("colorblind", Configuration.CATEGORY_GENERAL, false, "Setting this to true will disable colors and add in markers");
 
 		if (configuration.hasChanged())

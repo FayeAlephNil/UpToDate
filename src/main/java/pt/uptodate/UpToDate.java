@@ -10,6 +10,9 @@ import cpw.mods.fml.common.event.FMLLoadCompleteEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.event.ClickEvent;
@@ -19,6 +22,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import pt.api.IUpdateable;
 import pt.api.UpdateableUtils;
+import pt.uptodate.gui.GuiUpdates;
 import pt.uptodate.handlers.Config;
 import pt.uptodate.handlers.GuiHandler;
 import pt.uptodate.util.Logger;
@@ -47,6 +51,9 @@ public class UpToDate implements IUpdateable
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new Config());
 		MinecraftForge.EVENT_BUS.register(new GuiHandler());
+
+		GuiHandler guiHandler = new GuiHandler(UpToDate.updates.getCritical(), "To Game", "There are critical (world-breaking) updates available", this);
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
 
 		FMLCommonHandler.instance().bus().register(this);
 	}
@@ -80,31 +87,36 @@ public class UpToDate implements IUpdateable
 		if (!event.player.worldObj.isRemote && event.player instanceof EntityPlayerMP) {
 			EntityPlayerMP player = (EntityPlayerMP) event.player;
 
-			boolean chattedBools = (chatted.get(player) == null || !chatted.get(player));
 			boolean criticals = !updates.getCritical().isEmpty();
 			boolean singlePlayer = player.mcServer.isSinglePlayer();
 			boolean isOp = player.mcServer.getOpPermissionLevel() <= 2;
 			// TODO implement marquee, then remove comments
-			if (chattedBools && criticals && (isOp || singlePlayer) /* && Config.chat*/) {
-				ChatComponentText text = new ChatComponentText("There are critical updates available, click the mod name to download the update: ");
+			if (criticals && (isOp || singlePlayer)) {
+				if (Config.chat && (chatted.get(player) == null || !chatted.get(player))) {
+					ChatComponentText text = new ChatComponentText("There are critical (world-breaking) updates available, click the mod name to download the update: ");
 
-				for (FetchedUpdateable fetched : updates.critical) {
-					ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, fetched.url);
-					ChatStyle style = new ChatStyle().setChatClickEvent(click);
-					ChatComponentText modText = new ChatComponentText(fetched.mod.getName() + "");
-					modText.setChatStyle(style);
-					text.appendSibling(modText);
-				}
+					for (FetchedUpdateable fetched : updates.critical) {
+						ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, fetched.url);
+						ChatStyle style = new ChatStyle().setChatClickEvent(click);
+						ChatComponentText modText = new ChatComponentText(fetched.mod.getName() + "");
+						modText.setChatStyle(style);
+						text.appendSibling(modText);
+					}
 
-				if (Config.colorblind) {
-					text.appendSibling(new ChatComponentText("!!!"));
+					if (Config.colorblind) {
+						text.appendSibling(new ChatComponentText("!!!"));
+					} else {
+						text.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED));
+					}
+
+					player.addChatComponentMessage(text);
+
+					chatted.put(player, true);
 				} else {
-					text.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.RED));
+					if (!UpToDate.updates.getCritical().isEmpty()) {
+						player.openGui(this, GuiUpdates.GUI_ID, player.worldObj, player.serverPosX, player.serverPosY, player.serverPosZ);
+					}
 				}
-
-				player.addChatComponentMessage(text);
-
-				chatted.put(player, true);
 			}
 		}
 	}

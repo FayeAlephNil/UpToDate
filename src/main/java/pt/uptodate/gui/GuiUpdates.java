@@ -15,6 +15,8 @@ import java.awt.*;
  */
 
 public class GuiUpdates extends GuiBase {
+	public static final int GUI_ID = 20;
+
 	private final Iterable<FetchedUpdateable> updates;
 	private final String returnMessage;
 	private final String updatesAvailable;
