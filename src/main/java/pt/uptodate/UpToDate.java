@@ -28,6 +28,7 @@ import pt.uptodate.util.Logger;
 import pt.uptodate.util.Util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
 @Mod(modid = UpToDate.MOD_ID, version = UpToDate.VERSION, name = UpToDate.MOD_NAME)
@@ -39,7 +40,7 @@ public class UpToDate implements IUpdateable
 	public static final String SIMPLE_VERSION = "1";
 
 	public static FetchedList updates = new FetchedList();
-	protected static HashMap<EntityPlayer, Boolean> chatted = new HashMap<EntityPlayer, Boolean>();
+	protected static HashSet<EntityPlayer> chatted = new HashSet<EntityPlayer>();
 
 	@EventHandler void pre(FMLPreInitializationEvent event) {
 		Config.init(event.getSuggestedConfigurationFile());
@@ -90,7 +91,7 @@ public class UpToDate implements IUpdateable
 			boolean singlePlayer = player.mcServer.isSinglePlayer();
 			boolean isOp = player.mcServer.getOpPermissionLevel() <= 2;
 			if (criticals && (isOp || singlePlayer)) {
-				if (Config.chat && (chatted.get(player) == null || !chatted.get(player))) {
+				if (Config.chat && chatted.contains(player)) {
 					ChatComponentText text = new ChatComponentText("There are critical updates available, the old versions are world-breaking, click the mod name to download the update: ");
 
 					for (FetchedUpdateable fetched : updates.critical) {
@@ -109,7 +110,7 @@ public class UpToDate implements IUpdateable
 
 					player.addChatComponentMessage(text);
 
-					chatted.put(player, true);
+					chatted.add(player);
 				} else {
 					if (!UpToDate.updates.getCritical().isEmpty()) {
 						player.openGui(this, GuiUpdates.GUI_ID, player.worldObj, player.serverPosX, player.serverPosY, player.serverPosZ);
