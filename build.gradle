@@ -24,6 +24,7 @@ archivesBaseName = "uptodate"
 minecraft {
     version = "1.7.10-10.13.3.1387-1.7.10"
     runDir = "eclipse"
+	mappings = "stable_12"
 }
 
 dependencies {
