@@ -1,4 +1,4 @@
-package pt.api;
+package pt.uptodate.api;
 
 import org.yaml.snakeyaml.Yaml;
 import pt.uptodate.FetchedUpdateable;
