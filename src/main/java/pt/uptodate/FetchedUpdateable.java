@@ -30,6 +30,7 @@ public class FetchedUpdateable {
 	 * Creates a FetchedUpdateable from an IUpdateable with the getRemote
 	 * @param mod IUpdateable
 	 */
+	@SuppressWarnings("unchecked")
 	public FetchedUpdateable(IUpdateable mod) {
 		this.name = mod.getName();
 

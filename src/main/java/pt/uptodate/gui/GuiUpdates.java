@@ -1,5 +1,7 @@
 package pt.uptodate.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -13,7 +15,7 @@ import java.awt.*;
 /**
  * @author CoolSquid
  */
-
+@SideOnly(Side.CLIENT)
 public class GuiUpdates extends GuiBase {
 	public static final int GUI_ID = 20;
 
