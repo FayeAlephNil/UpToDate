@@ -51,7 +51,7 @@ public class UpToDate implements IUpdateable
 		MinecraftForge.EVENT_BUS.register(new Config());
 		MinecraftForge.EVENT_BUS.register(new GuiHandler());
 
-		GuiHandler guiHandler = new GuiHandler(UpToDate.updates.getCritical(), "To Game", "There are critical (world-breaking) updates available");
+		GuiHandler guiHandler = new GuiHandler(UpToDate.updates.getCritical(), "To Game", "There are critical updates available, the old versions are world-breaking");
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
 
 		FMLCommonHandler.instance().bus().register(this);
@@ -89,10 +89,9 @@ public class UpToDate implements IUpdateable
 			boolean criticals = !updates.getCritical().isEmpty();
 			boolean singlePlayer = player.mcServer.isSinglePlayer();
 			boolean isOp = player.mcServer.getOpPermissionLevel() <= 2;
-			// TODO implement marquee, then remove comments
 			if (criticals && (isOp || singlePlayer)) {
 				if (Config.chat && (chatted.get(player) == null || !chatted.get(player))) {
-					ChatComponentText text = new ChatComponentText("There are critical (world-breaking) updates available, click the mod name to download the update: ");
+					ChatComponentText text = new ChatComponentText("There are critical updates available, the old versions are world-breaking, click the mod name to download the update: ");
 
 					for (FetchedUpdateable fetched : updates.critical) {
 						ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, fetched.url);
