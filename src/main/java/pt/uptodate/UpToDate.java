@@ -152,14 +152,15 @@ public class UpToDate implements IUpdateable
 	 * @param fetched the FetchedUpdateable to register
 	 */
 	public static void registerFetched(FetchedUpdateable fetched) {
-		boolean noNulls = !Util.anyNulls(fetched.display, fetched.displaySeverity, fetched.oldDisp, fetched.name, fetched.url);
-
+		boolean noNulls = fetched != null && !Util.anyNulls(fetched.display, fetched.displaySeverity, fetched.oldDisp, fetched.name, fetched.url);
 		if (noNulls) {
 			if (fetched.old < fetched.version) {
 				updates.add(fetched);
 			}
 		} else {
-			Logger.error((fetched.name == null ? "A mod" : fetched.name) + " has null values");
+			ModContainer mod = Loader.instance().activeModContainer();
+			String name = mod != null && !mod.getModId().equals(MOD_ID) ? mod.getName() : fetched != null && fetched.name != null ? fetched.name : new Throwable().getStackTrace()[1].getClassName();
+			Logger.error(name + " has null values");
 		}
 	}
 }
