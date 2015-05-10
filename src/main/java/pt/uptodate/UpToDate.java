@@ -31,15 +31,14 @@ import pt.uptodate.util.Util;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 
 @Mod(modid = UpToDate.MOD_ID, version = UpToDate.VERSION, name = UpToDate.MOD_NAME)
 public class UpToDate implements IUpdateable
 {
 	public static final String MOD_ID = "uptodate";
 	public static final String MOD_NAME = "UpToDate";
-	public static final String VERSION = "1.0";
-	public static final String SIMPLE_VERSION = "1";
+	public static final String VERSION = "1.0b";
+	public static final String SIMPLE_VERSION = "2";
 
 	public static final FetchedList updates = new FetchedList();
 	protected static final HashSet<EntityPlayer> chatted = new HashSet<EntityPlayer>();
@@ -84,7 +83,7 @@ public class UpToDate implements IUpdateable
 
 			boolean criticals = !updates.getCritical().isEmpty();
 			boolean singlePlayer = player.mcServer.isSinglePlayer();
-			boolean isOp = player.mcServer.getOpPermissionLevel() <= 2;
+			boolean isOp = FMLCommonHandler.instance().getMinecraftServerInstance().getConfigurationManager().canSendCommands(player.getGameProfile());
 			if (criticals && (isOp || singlePlayer)) {
 				if (Config.chat && chatted.contains(player)) {
 					ChatComponentText text = new ChatComponentText("There are critical updates available, the old versions are world-breaking, click the mod name to download the update: ");
