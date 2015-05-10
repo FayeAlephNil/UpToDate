@@ -41,12 +41,8 @@ public class Util {
 		return list;
 	}
 
-	public static boolean anyNulls(Object... objects) {
-		return anyNulls(objects);
-	}
-
-	public static <T> boolean anyNulls(Iterable<T> possibleNulls) {
-		for (T item : possibleNulls) {
+	public static boolean anyNulls(Object... items) {
+		for (Object item : items) {
 			if (item == null) {
 				return true;
 			}

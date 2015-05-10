@@ -39,8 +39,8 @@ public class UpToDate implements IUpdateable
 	public static final String VERSION = "1.0";
 	public static final String SIMPLE_VERSION = "1";
 
-	public static FetchedList updates = new FetchedList();
-	protected static HashSet<EntityPlayer> chatted = new HashSet<EntityPlayer>();
+	public static final FetchedList updates = new FetchedList();
+	protected static final HashSet<EntityPlayer> chatted = new HashSet<EntityPlayer>();
 
 	@EventHandler void pre(FMLPreInitializationEvent event) {
 		Config.init(event.getSuggestedConfigurationFile());
