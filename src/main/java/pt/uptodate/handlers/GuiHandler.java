@@ -1,25 +1,15 @@
 package pt.uptodate.handlers;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.IGuiHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.GuiScreenEvent;
 import pt.uptodate.FetchedUpdateable;
-import pt.uptodate.UpToDate;
 import pt.uptodate.gui.GuiUpdates;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class GuiHandler implements IGuiHandler {
-	private boolean mainLaunched = false;
 	private ArrayList<FetchedUpdateable> updates;
 	private String returnMessage;
 	private String updatesAvailable;
@@ -34,62 +24,6 @@ public class GuiHandler implements IGuiHandler {
 		this.updates = updates;
 		this.returnMessage = returnMessage;
 		this.updatesAvailable = updatesAvailable;
-	}
-
-	/**
-	 * Constructor for Forge to use for my subscription
-	 */
-	public GuiHandler() {
-		super();
-	}
-
-	/**
-	 * Called when a gui is created. Makes the updates button on the main menu
-	 * @param event event passed by Forge
-	 */
-	@SuppressWarnings("unchecked")
-	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void onGuiInit(GuiScreenEvent.InitGuiEvent event) {
-		if (event.gui instanceof GuiMainMenu) {
-			String most = "";
-			Integer mostSevere = null;
-			if (UpToDate.updates.size() > 0) {
-				boolean critOrSevere = (!UpToDate.updates.getSevere().isEmpty() || !UpToDate.updates.getCritical().isEmpty());
-				if (critOrSevere && !mainLaunched && Config.severe) {
-					GuiScreen screen = new GuiUpdates(UpToDate.updates, "To Main Menu", "There are severe and/or critical updates available:");
-					Minecraft.getMinecraft().displayGuiScreen(screen);
-				}
-
-				if (!UpToDate.updates.getCritical().isEmpty()) {
-					if (Config.colorblind) {
-						most = " (!!)";
-					}
-					mostSevere = Color.RED.getRGB();
-				} else if (!UpToDate.updates.getSevere().isEmpty()) {
-					if (Config.colorblind) {
-						most = " (!)";
-					}
-					mostSevere = Color.YELLOW.getRGB();
-				}
-			}
-
-			GuiButton button = new GuiButton(10, 10, 0, "Updates " + "(" + UpToDate.updates.size() + ")" + most) {
-				@Override
-				public void mouseReleased(int p_146118_1_, int p_146118_2_) {
-					GuiScreen screen = new GuiUpdates(UpToDate.updates, "Return", "Available updates:");
-					Minecraft.getMinecraft().displayGuiScreen(screen);
-				}
-			};
-			if (mostSevere != null && !Config.colorblind)
-				button.packedFGColour = mostSevere;
-			button.yPosition = event.gui.height - 62;
-			button.xPosition = event.gui.width/2 - button.width/4;
-			button.height = 13;
-			button.width =  98;
-			event.buttonList.add(button);
-
-			mainLaunched = true;
-		}
 	}
 
 	/**

@@ -19,11 +19,13 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
+import org.apache.commons.lang3.StringUtils;
 import pt.uptodate.api.IUpdateable;
 import pt.uptodate.api.UpdateableUtils;
 import pt.uptodate.gui.GuiUpdates;
 import pt.uptodate.handlers.Config;
 import pt.uptodate.handlers.GuiHandler;
+import pt.uptodate.handlers.MainMenu;
 import pt.uptodate.util.Logger;
 import pt.uptodate.util.Util;
 
@@ -50,7 +52,8 @@ public class UpToDate implements IUpdateable
 	public void init(FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(new Config());
-		MinecraftForge.EVENT_BUS.register(new GuiHandler());
+		if (FMLCommonHandler.instance().getSide().equals(Side.CLIENT))
+			MinecraftForge.EVENT_BUS.register(new MainMenu());
 
 		GuiHandler guiHandler = new GuiHandler(UpToDate.updates.getCritical(), "To Game", "There are critical updates available, the old versions are world-breaking");
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
@@ -66,19 +69,11 @@ public class UpToDate implements IUpdateable
 					registerUpdateable((IUpdateable) mod.getMod());
 				}
 			}
-			StringBuilder b = new StringBuilder();
-			Iterator<FetchedUpdateable> i = updates.iterator();
-			while (i.hasNext()) {
-				FetchedUpdateable fetched = i.next();
-				if (i.hasNext()) {
-					b.append(", ");
-				}
-				else {
-					b.append(" and ");
-				}
-				b.append(fetched.name);
-			}
-			Logger.info("The following mods are out of date: " + b.substring(2));
+			String[] fetchedNames = new String[updates.size()];
+			for (FetchedUpdateable update : updates)
+				fetchedNames[fetchedNames.length - 1] = update.name;
+
+			Logger.info("The following mods are out of date: " + StringUtils.join(fetchedNames, ", "));
 		}
 	}
 
