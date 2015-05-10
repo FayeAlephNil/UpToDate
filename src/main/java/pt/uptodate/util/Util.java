@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -25,22 +24,6 @@ public class Util {
 		}
 	}
 
-	public static String joinAnd(Iterable<String> strings) {
-		String result = null;
-		Iterator<String> iter = strings.iterator();
-		while (iter.hasNext()) {
-			result += ", ";
-			String next = iter.next();
-
-			if (!iter.hasNext()) {
-				result += "and ";
-			}
-
-			result += next;
-		}
-		return result;
-	}
-
 	public static Integer max(Iterable<Integer> nums) {
 		Integer result = null;
 		for (Integer num : nums) {
@@ -56,5 +39,18 @@ public class Util {
 			list.remove(i);
 		}
 		return list;
+	}
+
+	public static boolean anyNulls(Object... objects) {
+		return anyNulls(objects);
+	}
+
+	public static <T> boolean anyNulls(Iterable<T> possibleNulls) {
+		for (T item : possibleNulls) {
+			if (item == null) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

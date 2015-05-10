@@ -11,8 +11,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
+import cpw.mods.fml.relauncher.Side;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.event.ClickEvent;
@@ -40,7 +39,7 @@ public class UpToDate implements IUpdateable
 	public static final String SIMPLE_VERSION = "1";
 
 	public static FetchedList updates = new FetchedList();
-	private static HashMap<EntityPlayer, Boolean> chatted = new HashMap<EntityPlayer, Boolean>();
+	protected static HashMap<EntityPlayer, Boolean> chatted = new HashMap<EntityPlayer, Boolean>();
 
 	@EventHandler void pre(FMLPreInitializationEvent event) {
 		Config.init(event.getSuggestedConfigurationFile());
@@ -52,7 +51,7 @@ public class UpToDate implements IUpdateable
 		MinecraftForge.EVENT_BUS.register(new Config());
 		MinecraftForge.EVENT_BUS.register(new GuiHandler());
 
-		GuiHandler guiHandler = new GuiHandler(UpToDate.updates.getCritical(), "To Game", "There are critical (world-breaking) updates available", this);
+		GuiHandler guiHandler = new GuiHandler(UpToDate.updates.getCritical(), "To Game", "There are critical (world-breaking) updates available");
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, guiHandler);
 
 		FMLCommonHandler.instance().bus().register(this);
@@ -76,7 +75,7 @@ public class UpToDate implements IUpdateable
 				else {
 					b.append(" and ");
 				}
-				b.append(fetched.mod.getName());
+				b.append(fetched.name);
 			}
 			Logger.info("The following mods are out of date: " + b.substring(2));
 		}
@@ -84,7 +83,7 @@ public class UpToDate implements IUpdateable
 
 	@SubscribeEvent
 	public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (!event.player.worldObj.isRemote && event.player instanceof EntityPlayerMP) {
+		if (!event.player.worldObj.isRemote && event.player instanceof EntityPlayerMP && FMLCommonHandler.instance().getSide().equals(Side.SERVER)) {
 			EntityPlayerMP player = (EntityPlayerMP) event.player;
 
 			boolean criticals = !updates.getCritical().isEmpty();
@@ -98,7 +97,7 @@ public class UpToDate implements IUpdateable
 					for (FetchedUpdateable fetched : updates.critical) {
 						ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, fetched.url);
 						ChatStyle style = new ChatStyle().setChatClickEvent(click);
-						ChatComponentText modText = new ChatComponentText(fetched.mod.getName() + "");
+						ChatComponentText modText = new ChatComponentText(fetched.name + "");
 						modText.setChatStyle(style);
 						text.appendSibling(modText);
 					}
@@ -145,9 +144,22 @@ public class UpToDate implements IUpdateable
 	 * @param updateable the IUpdateable to register
 	 */
 	public static void registerUpdateable(IUpdateable updateable) {
-		FetchedUpdateable toBe = new FetchedUpdateable(updateable);
-		if (toBe.diff > 0) {
-			updates.add(toBe);
+		registerFetched(new FetchedUpdateable(updateable));
+	}
+
+	/**
+	 * Registers a FetchedUpdateable to uptodate's registries
+	 * @param fetched the FetchedUpdateable to register
+	 */
+	public static void registerFetched(FetchedUpdateable fetched) {
+		boolean noNulls = !Util.anyNulls(fetched.display, fetched.displaySeverity, fetched.oldDisp, fetched.name, fetched.url);
+
+		if (noNulls) {
+			if (fetched.old < fetched.version) {
+				updates.add(fetched);
+			}
+		} else {
+			Logger.error((fetched.name == null ? "A mod" : fetched.name) + " has null values");
 		}
 	}
 }

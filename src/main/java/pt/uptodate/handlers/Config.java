@@ -15,6 +15,10 @@ public class Config {
 	public static boolean severe = true;
 	public static boolean colorblind = false;
 
+	/**
+	 * Creates the Config file
+	 * @param configFile file to use
+	 */
 	public static void init(File configFile) {
 
 		//create configuration object from the given file
@@ -25,6 +29,10 @@ public class Config {
 		}
 	}
 
+	/**
+	 * Loads the config file when it is changed
+	 * @param event event fired on change
+	 */
 	@SubscribeEvent
 	public void onConfigurationChangedEvent(ConfigChangedEvent.OnConfigChangedEvent event)
 	{
@@ -34,6 +42,9 @@ public class Config {
 		}
 	}
 
+	/**
+	 * Loads the config
+	 */
 	private static void loadConfiguration()
 	{
 		chat = configuration.getBoolean("chat", Configuration.CATEGORY_GENERAL, false, "Setting this to true will turn on chat update notifications and disable the click-to-advance screen");

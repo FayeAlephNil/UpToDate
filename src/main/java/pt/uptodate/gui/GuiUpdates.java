@@ -21,6 +21,12 @@ public class GuiUpdates extends GuiBase {
 	private final String returnMessage;
 	private final String updatesAvailable;
 
+	/**
+	 * Constructor for gui
+	 * @param updates Updates to display
+	 * @param returnMessage Return message to use
+	 * @param updatesAvailable Message if there are available updates
+	 */
 	public GuiUpdates(Iterable<FetchedUpdateable> updates, String returnMessage, String updatesAvailable) {
 		super();
 		this.updates = updates;
@@ -33,7 +39,7 @@ public class GuiUpdates extends GuiBase {
 	public void initGui() {
 		int a = 0;
 		for (FetchedUpdateable fetched : updates) {
-			GuiButton b = new GuiButtonMod(1, 0, this.height / 2 - 20 + a, fetched.mod.getName() + " " + fetched.oldDisp + "/" + fetched.display, fetched);
+			GuiButton b = new GuiButtonMod(1, 0, this.height / 2 - 20 + a, fetched.name + " " + fetched.oldDisp + "/" + fetched.display, fetched);
 			b.xPosition = this.width / 2 - (b.width / 2);
 			this.buttonList.add(b);
 			a += b.height + 4;
@@ -79,6 +85,14 @@ public class GuiUpdates extends GuiBase {
 
 		private final FetchedUpdateable mod;
 
+		/**
+		 * Creates a button
+		 * @param id button id
+		 * @param x posX
+		 * @param y posY
+		 * @param name Name (displayString) of button
+		 * @param mod mod data (FetchedUpdateable) to be used
+		 */
 		public GuiButtonMod(int id, int x, int y, String name, FetchedUpdateable mod) {
 			super(id, x, y, name);
 			if (Config.colorblind) {
@@ -94,6 +108,10 @@ public class GuiUpdates extends GuiBase {
 			this.mod = mod;
 		}
 
+		/**
+		 * Gets the mod being used
+		 * @return FetchedUpdateable in the button
+		 */
 		public FetchedUpdateable getMod() {
 			return this.mod;
 		}
