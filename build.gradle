@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0"
+version = "1.0c"
 group= "pt.uptodate" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "uptodate"
 
@@ -40,8 +40,6 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-	compile 'org.yaml:snakeyaml:1.15'
 }
 
 processResources

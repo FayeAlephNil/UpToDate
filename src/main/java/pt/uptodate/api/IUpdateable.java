@@ -11,7 +11,7 @@ public interface IUpdateable {
 
 	/**
 	 * Gets the remote update info
-	 * @return Has to be valid YAML or JSON
+	 * @return Has to be valid JSON
 	 */
 	public String getRemote();
 

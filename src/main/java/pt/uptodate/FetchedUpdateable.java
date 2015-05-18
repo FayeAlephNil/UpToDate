@@ -1,6 +1,6 @@
 package pt.uptodate;
 
-import org.yaml.snakeyaml.Yaml;
+import com.google.gson.Gson;
 import pt.uptodate.api.IUpdateable;
 import pt.uptodate.util.Util;
 
@@ -34,8 +34,7 @@ public class FetchedUpdateable {
 	public FetchedUpdateable(IUpdateable mod) {
 		this.name = mod.getName();
 
-		Yaml yaml = new Yaml();
-		Map<String, Object> load = (Map<String, Object>) yaml.load(mod.getRemote());
+		Map<String, Object> load = new Gson().fromJson(mod.getRemote(), Map.class);
 		this.auto = (Boolean) load.get("auto");
 		this.url = (String) load.get("url");
 

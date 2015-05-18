@@ -1,6 +1,6 @@
 package pt.uptodate.api;
 
-import org.yaml.snakeyaml.Yaml;
+import com.google.gson.Gson;
 import pt.uptodate.FetchedUpdateable;
 import pt.uptodate.UpToDate;
 import pt.uptodate.util.io.IOUtils;
@@ -22,8 +22,7 @@ public class UpdateableUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static HashMap<String, String> localVersionFile(File file) {
-		Yaml yaml = new Yaml();
-		Map<String, Object> load = (Map<String, Object>) yaml.load(IOUtils.readAll(file));
+		Map<String, Object> load = new Gson().fromJson(IOUtils.readAll(file), Map.class);
 
 		HashMap<String, String> result = new HashMap<String, String>();
 		result.put("technical", (String) load.get("localDisp"));

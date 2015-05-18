@@ -1,7 +1,7 @@
 {
-  "display": ["1.0", "1.0b"],
-  "technical": [1, 2],
-  "severity": [1, 3],
+  "display": ["1.0", "1.0b", "1.0c"],
+  "technical": [1, 2, 3],
+  "severity": [1, 3, 3],
 
   "auto": true,
   "url": "http://minecraft.curseforge.com/mc-mods/230312-uptodate/files"

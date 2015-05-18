@@ -37,8 +37,8 @@ public class UpToDate implements IUpdateable
 {
 	public static final String MOD_ID = "uptodate";
 	public static final String MOD_NAME = "UpToDate";
-	public static final String VERSION = "1.0b";
-	public static final String SIMPLE_VERSION = "2";
+	public static final String VERSION = "1.0c";
+	public static final String SIMPLE_VERSION = "3";
 
 	public static final FetchedList updates = new FetchedList();
 	protected static final HashSet<EntityPlayer> chatted = new HashSet<EntityPlayer>();
@@ -107,7 +107,7 @@ public class UpToDate implements IUpdateable
 					chatted.add(player);
 				} else {
 					if (!UpToDate.updates.getCritical().isEmpty()) {
-						player.openGui(this, GuiUpdates.GUI_ID, player.worldObj, player.serverPosX, player.serverPosY, player.serverPosZ);
+						player.openGui(this, GuiUpdates.GUI_ID, player.worldObj, (int) player.serverPosX, (int) player.posY, (int) player.posZ);
 					}
 				}
 			}
