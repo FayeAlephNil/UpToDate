@@ -165,4 +165,143 @@ public class FetchedUpdateable {
 		}
 		return "Critical!!";
 	}
+
+	/**
+	 * A builder for creating FetchedUpdateables. Example:
+	 * <pre><code>FetchedUpdateable fetched = new Builder()
+	 * .setAuto(true)
+	 * .setDisplay("2.0.0")
+	 * .setVersion(200)
+	 * .setDisplaySeverity("Critical")
+	 * .setSeverity(3)
+	 * .setName("ExampleMod")
+	 * .setOldDisp("1.0.0")
+	 * .setOld(100)
+	 * .setUrl("example.com")
+	 * .build();</code></pre>
+	 *
+	 * The Builder can be reused, and <code>build()</code> can be called an infinite amount of times.
+	 *
+	 * @author CoolSquid
+	 */
+	public static class Builder {
+
+		private boolean auto;
+		private int severity;
+		private String displaySeverity;
+		private String display;
+		private String oldDisp;
+		private String url;
+		private int old;
+		private int version;
+		private String name;
+
+		/**
+		 * Sets the auto.
+		 *
+		 * @param auto the auto
+		 * @return the builder
+		 */
+		public Builder setAuto(boolean auto) {
+			this.auto = auto;
+			return this;
+		}
+
+		/**
+		 * Sets the severity.
+		 *
+		 * @param severity the severity
+		 * @return the builder
+		 */
+		public Builder setSeverity(int severity) {
+			this.severity = severity;
+			return this;
+		}
+
+		/**
+		 * Sets the display severity.
+		 *
+		 * @param displaySeverity the display severity
+		 * @return the builder
+		 */
+		public Builder setDisplaySeverity(String displaySeverity) {
+			this.displaySeverity = displaySeverity;
+			return this;
+		}
+
+		/**
+		 * Sets the display.
+		 *
+		 * @param display the display
+		 * @return the builder
+		 */
+		public Builder setDisplay(String display) {
+			this.display = display;
+			return this;
+		}
+
+		/**
+		 * Sets the old disp.
+		 *
+		 * @param oldDisp the old disp
+		 * @return the builder
+		 */
+		public Builder setOldDisp(String oldDisp) {
+			this.oldDisp = oldDisp;
+			return this;
+		}
+
+		/**
+		 * Sets the url.
+		 *
+		 * @param url the url
+		 * @return the builder
+		 */
+		public Builder setUrl(String url) {
+			this.url = url;
+			return this;
+		}
+
+		/**
+		 * Sets the old.
+		 *
+		 * @param old the old
+		 * @return the builder
+		 */
+		public Builder setOld(int old) {
+			this.old = old;
+			return this;
+		}
+
+		/**
+		 * Sets the version.
+		 *
+		 * @param version the version
+		 * @return the builder
+		 */
+		public Builder setVersion(int version) {
+			this.version = version;
+			return this;
+		}
+
+		/**
+		 * Sets the name.
+		 *
+		 * @param name the name
+		 * @return the builder
+		 */
+		public Builder setName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		/**
+		 * Builds the fetched updateable.
+		 *
+		 * @return the fetched updateable
+		 */
+		public FetchedUpdateable build() {
+			return new FetchedUpdateable(this.auto, this.severity, this.displaySeverity, this.display, this.oldDisp, this.url, this.old, this.version, this.name);
+		}
+	}
 }
